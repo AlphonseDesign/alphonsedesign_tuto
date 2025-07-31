@@ -1,0 +1,58 @@
+{% load static %}
+{% load widget_tweaks %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Connexion</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+        <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Connexion</h2>
+
+        <form method="post" class="space-y-4">
+            {% csrf_token %}
+
+            <!-- Erreurs globales (ex: mauvais identifiants) -->
+            {% if form.errors %}
+                <div class="text-red-500 text-sm">
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    {% endfor %}
+                    {% for error in form.non_field_errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <!-- Champ Nom d'utilisateur -->
+            <div>
+                <label for="username" class="block text-gray-700">Nom d'utilisateur</label>
+                {{ form.username|add_class:"w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" }}
+            </div>
+
+            <!-- Champ Mot de passe -->
+            <div>
+                <label for="password" class="block text-gray-700">Mot de passe</label>
+                {{ form.password|add_class:"w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" }}
+            </div>
+
+            <!-- Bouton de connexion -->
+            <button type="submit" class="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700">
+                Se connecter
+            </button>
+        </form>
+
+        <!-- Lien vers inscription -->
+        <p class="mt-4 text-center text-sm text-gray-600">
+            Pas encore de compte ?
+            <a href="{% url 'register' %}" class="text-blue-500 hover:underline">Créer un compte</a>
+        </p>
+    </div>
+
+</body>
+</html>
