@@ -1,1 +1,1 @@
-web: gunicorn VOTRE_NOM_DE_PROJET.wsgi:application
+web: gunicorn video_streaming.wsgi:application
