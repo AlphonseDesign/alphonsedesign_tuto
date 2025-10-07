@@ -7,7 +7,12 @@ SECRET_KEY = 'django-insecure-9ze=j3sa)emg1mz$&teal&bgqjy&p$(&&4$a$t1+k791be-=i%
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'alphonsedesign-tuto.onrender.com',  # <== AJOUTEZ CETTE LIGNE
+    '.localhost',
+    '127.0.0.1',
+    '[::1]',
+]
 
 # Application definition
 INSTALLED_APPS = [
