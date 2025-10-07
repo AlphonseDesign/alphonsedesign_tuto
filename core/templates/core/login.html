@@ -5,19 +5,41 @@
 <head>
     <meta charset="UTF-8">
     <title>Connexion</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
 
-    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Connexion</h2>
+<body class="relative flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-600 via-purple-600 to-pink-500 overflow-hidden">
 
-        <form method="post" class="space-y-4">
+    <!-- Animation de fond -->
+    <div class="absolute inset-0 opacity-25">
+        <lottie-player 
+            src="https://assets10.lottiefiles.com/packages/lf20_jcikwtux.json"
+            background="transparent"
+            speed="1"
+            loop
+            autoplay
+            style="width:100%;height:100%">
+        </lottie-player>
+    </div>
+
+    <!-- Conteneur principal -->
+    <div class="relative bg-white/95 backdrop-blur-xl p-8 rounded-2xl shadow-2xl w-full max-w-md transform transition-all duration-500 hover:scale-105 animate-fadeIn border border-white/60">
+        
+        <div class="text-center mb-6">
+            <i data-lucide="lock" class="w-12 h-12 text-blue-600 mx-auto mb-2"></i>
+            <h2 class="text-3xl font-extrabold text-gray-900">Connexion</h2>
+            <p class="text-gray-700 text-sm mt-1">Heureux de te revoir 👋</p>
+        </div>
+
+        <!-- Formulaire -->
+        <form method="post" class="space-y-5">
             {% csrf_token %}
 
-            <!-- Erreurs globales (ex: mauvais identifiants) -->
             {% if form.errors %}
-                <div class="text-red-500 text-sm">
+                <div class="bg-red-100 border border-red-400 text-red-700 px-3 py-2 rounded">
                     {% for field in form %}
                         {% for error in field.errors %}
                             <p>{{ error }}</p>
@@ -29,30 +51,51 @@
                 </div>
             {% endif %}
 
-            <!-- Champ Nom d'utilisateur -->
             <div>
-                <label for="username" class="block text-gray-700">Nom d'utilisateur</label>
-                {{ form.username|add_class:"w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" }}
+                <label for="username" class="block text-gray-800 font-medium mb-1">Nom d'utilisateur</label>
+                {{ form.username|add_class:"w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 text-gray-800 bg-white" }}
             </div>
 
-            <!-- Champ Mot de passe -->
             <div>
-                <label for="password" class="block text-gray-700">Mot de passe</label>
-                {{ form.password|add_class:"w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" }}
+                <label for="password" class="block text-gray-800 font-medium mb-1">Mot de passe</label>
+                {{ form.password|add_class:"w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 text-gray-800 bg-white" }}
             </div>
 
-            <!-- Bouton de connexion -->
-            <button type="submit" class="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700">
+            <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-2 rounded-lg hover:from-blue-700 hover:to-purple-700 shadow-lg transform hover:scale-105 transition-all duration-300 font-semibold">
                 Se connecter
             </button>
         </form>
 
-        <!-- Lien vers inscription -->
-        <p class="mt-4 text-center text-sm text-gray-600">
+        <!-- Lien vers l'inscription -->
+        <p class="mt-6 text-center text-sm text-gray-800">
             Pas encore de compte ?
-            <a href="{% url 'register' %}" class="text-blue-500 hover:underline">Créer un compte</a>
+            <a href="{% url 'register' %}" class="text-blue-600 hover:underline font-semibold">Créer un compte</a>
         </p>
     </div>
+
+    <!-- Script icônes + animation -->
+    <script>
+        lucide.createIcons();
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const form = document.querySelector('.animate-fadeIn');
+            form.classList.add('opacity-0');
+            setTimeout(() => {
+                form.classList.remove('opacity-0');
+                form.classList.add('opacity-100');
+            }, 200);
+        });
+    </script>
+
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fadeIn {
+            animation: fadeIn 0.8s ease-out;
+        }
+    </style>
 
 </body>
 </html>

@@ -1,180 +1,141 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <title>Accueil - Vidéos</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
-    <!-- Icônes Material -->
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <style>
-        * {
-            box-sizing: border-box;
-            font-family: 'Roboto', sans-serif;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Accueil - Alphonse Design</title>
 
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #f9f9f9;
-        }
+  <!-- Tailwind + Icônes + Lottie -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
 
-        header {
-            background-color: #202020;
-            color: white;
-            padding: 10px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
+  <style>
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fadeIn {
+      animation: fadeIn 0.8s ease-out forwards;
+    }
+    .glow { text-shadow: 0 0 10px rgba(255,255,255,0.3); }
 
-        header h1 {
-            margin: 0;
-            font-size: 24px;
-        }
+    /* Animation de click sur vidéo */
+    .click-animate {
+      transform: scale(0.95);
+      transition: transform 0.15s ease;
+    }
+    .click-animate.active {
+      transform: scale(1.05);
+    }
 
-        nav {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        nav a {
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        nav a:hover {
-            text-decoration: underline;
-        }
-
-        .search-form {
-            display: flex;
-            align-items: center;
-            background-color: #333;
-            border-radius: 20px;
-            padding: 4px 10px;
-        }
-
-        .search-form input[type="text"] {
-            border: none;
-            background: transparent;
-            color: white;
-            padding: 5px;
-            width: 150px;
-            outline: none;
-        }
-
-        .material-icons {
-            color: white;
-            cursor: pointer;
-        }
-
-        .container {
-            padding: 20px;
-        }
-
-        .video-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-            gap: 20px;
-        }
-
-        .video-card {
-            background: white;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            transition: transform 0.2s ease;
-            text-decoration: none;
-            color: inherit;
-        }
-
-        .video-card:hover {
-            transform: scale(1.02);
-        }
-
-        .video-thumbnail {
-            width: 100%;
-            height: 140px;
-            object-fit: cover;
-        }
-
-        .video-info {
-            padding: 10px;
-        }
-
-        .video-title {
-            font-size: 16px;
-            font-weight: bold;
-            margin: 0 0 5px;
-        }
-
-        .video-author {
-            font-size: 13px;
-            color: #666;
-        }
-
-        .upload-btn {
-            display: inline-block;
-            margin-bottom: 20px;
-            padding: 10px 16px;
-            background-color: #cc0000;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        .upload-btn:hover {
-            background-color: #e60000;
-        }
-    </style>
+    /* Barre de recherche focus */
+    .search-input:focus {
+      width: 220px;
+      transition: width 0.4s ease;
+    }
+  </style>
 </head>
-<body>
 
-    <header>
-        <h1>VidéoStream</h1>
-        <nav>
-            <form method="get" action="{% url 'video_search' %}" class="search-form">
-                <input type="text" name="q" placeholder="Rechercher..." value="{{ request.GET.q }}">
-                <button type="submit" style="background:none;border:none;padding:0;margin:0;">
-                    <span class="material-icons">search</span>
-                </button>
-            </form>
-            
-            {% if user.is_authenticated %}
-                <span style="color: white;">Bienvenue, {{ user.username }}</span>
-                <a href="{% url 'upload_video' %}">Uploader</a>
-                <a href="{% url 'logout' %}">Déconnexion</a>
-            {% else %}
-                <a href="{% url 'login' %}">Connexion</a>
-                <a href="{% url 'register' %}">Créer un compte</a>
-            {% endif %}
-        </nav>
-    </header>
+<body class="relative min-h-screen bg-gradient-to-br from-blue-700 via-purple-700 to-pink-600 overflow-y-auto">
 
-    <div class="container">
-        {% if videos %}
-            <div class="video-grid">
-                {% for video in videos %}
-                    <a href="{% url 'watch_video' video.id %}" class="video-card">
-                        <img class="video-thumbnail" src="{{ video.thumbnail.url }}" alt="Miniature">
-                        <div class="video-info">
-                            <p class="video-title">{{ video.title }}</p>
-                            <p class="video-author">Posté par {{ video.user.username }}</p>
-                        </div>
-                    </a>
-                {% endfor %}
-            </div>
+  <!-- Fond animé -->
+  <div class="fixed inset-0 opacity-20 -z-10 pointer-events-none">
+    <lottie-player 
+      src="https://assets10.lottiefiles.com/packages/lf20_jcikwtux.json"
+      background="transparent"
+      speed="1"
+      loop
+      autoplay
+      style="width:100%;height:100%">
+    </lottie-player>
+  </div>
+
+  <!-- Navbar -->
+  <header class="fixed top-0 left-0 w-full bg-black/40 backdrop-blur-lg border-b border-white/20 shadow-md z-20">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex flex-wrap justify-between items-center text-white">
+      <div class="flex items-center gap-2">
+        <i data-lucide="play-circle" class="w-8 h-8 text-yellow-400"></i>
+        <h1 class="text-2xl font-bold glow">Alphonse Design</h1>
+      </div>
+
+      <!-- Barre de recherche -->
+      <form method="get" action="{% url 'video_search' %}" class="flex items-center bg-white/20 border border-white/30 rounded-full px-4 py-2 backdrop-blur-md focus-within:bg-white/30 transition-all">
+        <i data-lucide="search" class="w-5 h-5 text-white opacity-80 mr-2"></i>
+        <input type="text" name="q" placeholder="Rechercher une vidéo..." value="{{ request.GET.q }}" 
+               class="search-input bg-transparent placeholder-gray-200 text-white focus:outline-none w-48 sm:w-72">
+      </form>
+
+      <nav class="flex items-center gap-5 text-white text-sm font-medium mt-3 sm:mt-0">
+        {% if user.is_authenticated %}
+          <span class="text-gray-200 hidden sm:inline">👋 {{ user.username }}</span>
+          <a href="{% url 'upload_video' %}" class="hover:text-yellow-400 transition">Uploader</a>
+          <a href="{% url 'logout' %}" class="hover:text-red-400 transition">Déconnexion</a>
         {% else %}
-            <p>Aucune vidéo disponible pour le moment.</p>
+          <a href="{% url 'login' %}" class="hover:text-yellow-400 transition">Connexion</a>
+          <a href="{% url 'register' %}" class="hover:text-yellow-400 transition">Créer un compte</a>
         {% endif %}
+      </nav>
+    </div>
+  </header>
+
+  <main class="pt-32 pb-12 px-6">
+    <div class="text-center mb-8">
+      <h2 class="text-4xl font-extrabold text-white mb-3 animate-fadeIn glow">
+        Bienvenue sur <span class="text-yellow-400">Alphonse Design</span>
+      </h2>
+      <p class="text-gray-200 text-lg">Regarde, partage et découvre des vidéos inspirantes 🎬</p>
     </div>
 
+    {% if user.is_authenticated %}
+      <div class="text-center mb-10">
+        <a href="{% url 'upload_video' %}" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-yellow-500 to-pink-500 text-white font-semibold rounded-full shadow-lg hover:scale-105 hover:shadow-xl transition-all duration-300">
+          <i data-lucide="upload" class="w-5 h-5"></i> Uploader une vidéo
+        </a>
+      </div>
+    {% endif %}
+
+    {% if videos %}
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 max-w-7xl mx-auto">
+        {% for video in videos %}
+          <div class="bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl overflow-hidden shadow-lg transform hover:scale-105 transition duration-300 animate-fadeIn video-card">
+            
+            <video class="w-full h-48 object-cover rounded-t-2xl cursor-pointer" controls poster="{{ video.thumbnail.url }}"></video>
+            
+            <div class="p-4 text-left">
+              <h3 class="text-lg font-bold text-white mb-1">{{ video.title }}</h3>
+              <p class="text-sm text-white mb-1">Posté par <span class="font-semibold text-white">{{ video.user.username }}</span></p>
+              <p class="text-sm text-white opacity-80 truncate">{{ video.description|truncatewords:15 }}</p>
+              <a href="{% url 'watch_video' video.id %}" class="mt-2 inline-block px-3 py-1 bg-yellow-400 text-black font-semibold rounded-full text-sm hover:bg-yellow-500 transition click-animate">
+                Regarder
+              </a>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="text-white text-center text-lg mt-6">Aucune vidéo disponible pour le moment 🎥</p>
+    {% endif %}
+  </main>
+
+  <script>
+    lucide.createIcons();
+
+    // Animation apparitions
+    document.addEventListener("DOMContentLoaded", () => {
+      document.querySelectorAll('.animate-fadeIn').forEach((el, i) => {
+        el.style.opacity = "0";
+        setTimeout(() => { el.style.opacity = "1"; }, i * 150);
+      });
+
+      // Animation click sur boutons "Regarder"
+      document.querySelectorAll('.click-animate').forEach(btn => {
+        btn.addEventListener('mousedown', () => btn.classList.add('active'));
+        btn.addEventListener('mouseup', () => btn.classList.remove('active'));
+        btn.addEventListener('mouseleave', () => btn.classList.remove('active'));
+      });
+    });
+  </script>
 </body>
 </html>

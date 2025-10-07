@@ -1,4 +1,5 @@
 {% load static %}
+{% load widget_tweaks %}
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -6,37 +7,84 @@
     <title>Créer un compte</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
 
-    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Créer un compte</h2>
+<body class="relative flex items-center justify-center min-h-screen bg-gradient-to-br from-pink-500 via-purple-600 to-blue-600 overflow-hidden">
 
+    <!-- Animation de fond -->
+    <div class="absolute inset-0 opacity-25">
+        <lottie-player 
+            src="https://assets4.lottiefiles.com/packages/lf20_qp1q7mct.json"
+            background="transparent"
+            speed="1"
+            loop
+            autoplay
+            style="width:100%;height:100%">
+        </lottie-player>
+    </div>
+
+    <!-- Conteneur principal -->
+    <div class="relative bg-white/95 backdrop-blur-xl p-8 rounded-2xl shadow-2xl w-full max-w-md transform transition-all duration-500 hover:scale-105 animate-fadeIn border border-white/60">
+
+        <!-- Titre -->
+        <div class="text-center mb-6">
+            <i data-lucide="user-plus" class="w-12 h-12 text-purple-600 mx-auto mb-2"></i>
+            <h2 class="text-3xl font-extrabold text-gray-900">Créer un compte</h2>
+            <p class="text-gray-700 text-sm mt-1">Rejoins la communauté dès maintenant 🚀</p>
+        </div>
+
+        <!-- Formulaire -->
         <form method="post" class="space-y-4">
             {% csrf_token %}
 
             {% for field in form %}
                 <div>
-                    <label class="block text-gray-700 font-medium mb-1" for="{{ field.id_for_label }}">
+                    <label for="{{ field.id_for_label }}" class="block text-gray-800 font-medium mb-1">
                         {{ field.label }}
                     </label>
-                    {{ field }}
+                    {{ field|add_class:"w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-300 text-gray-800 bg-white" }}
                     {% if field.errors %}
                         <p class="text-sm text-red-600 mt-1">{{ field.errors.0 }}</p>
                     {% endif %}
                 </div>
             {% endfor %}
 
-            <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">
+            <button type="submit" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-2 rounded-lg hover:from-purple-700 hover:to-pink-700 shadow-lg transform hover:scale-105 transition-all duration-300 font-semibold">
                 S'inscrire
             </button>
         </form>
 
-        <p class="mt-4 text-center text-sm text-gray-600">
-            Déjà inscrit ?
-            <a href="{% url 'login' %}" class="text-blue-500 hover:underline">Se connecter</a>
+        <!-- Lien vers la connexion -->
+        <p class="mt-6 text-center text-sm text-gray-800">
+            Déjà un compte ?
+            <a href="{% url 'login' %}" class="text-purple-600 hover:underline font-semibold">Se connecter</a>
         </p>
     </div>
 
+    <script>
+        lucide.createIcons();
+
+        // Animation d’apparition fluide
+        document.addEventListener("DOMContentLoaded", () => {
+            const form = document.querySelector('.animate-fadeIn');
+            form.classList.add('opacity-0');
+            setTimeout(() => {
+                form.classList.remove('opacity-0');
+                form.classList.add('opacity-100');
+            }, 200);
+        });
+    </script>
+
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fadeIn {
+            animation: fadeIn 0.8s ease-out;
+        }
+    </style>
 </body>
 </html>
